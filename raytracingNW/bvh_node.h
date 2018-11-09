@@ -83,7 +83,6 @@ bool bvh_node::hit(const ray&r, float t_min, float t_max, hit_record& rec)const 
 
 
 bvh_node::bvh_node(hitable ** l, int n, float time0, float time1) {
-	printf("bvh_node n = %d,time0=%f, time1=%f \n", n, time0, time1);
 	int axis = int(3 * drand48());
 	if (axis == 0)
 		qsort(l, n, sizeof(hitable*), box_x_compare);
@@ -106,7 +105,6 @@ bvh_node::bvh_node(hitable ** l, int n, float time0, float time1) {
 	if (!left->bounding_box(time0, time1, box_left) || !right->bounding_box(time0, time1, box_right))
 		std::cerr << "no bounding box in bvh_node constructor\n";
 	box = surrounding_box(box_left, box_right);
-	printf("n = %d, minx = %f,miny = %f,minz = %f,maxX = %f,maxY = %f,maxZ = %f \n", n, box.min().x(), box.min().y(), box.min().z(), box.max().x(), box.max().y(), box.max().z());
 }
 
 

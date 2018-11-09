@@ -71,8 +71,8 @@ hitable *random_scene2() {
 	
 	list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5, 0.5, 0.5)));
 	list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
-	//list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertian(vec3(0.4, 0.2, 0.1)));
-	//list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(vec3(0.7, 0.6, 0.5), 0.0));
+	list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertian(vec3(0.4, 0.2, 0.1)));
+	list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(vec3(0.7, 0.6, 0.5), 0.0));
 	printf("random_scene2 i = %d\n", i);
 	return new bvh_node(list, i, 0.0, 1.0);
 }
@@ -107,16 +107,15 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 int main() {
 	start = time(NULL);
-	const int nx = 20;
-	const int ny = 10;
+	const int nx = 200;
+	const int ny = 100;
 	int ns = 100;
 	std::vector<unsigned char> image;
 	image.resize(nx * ny * 4);
 	//ofstream ppmfile("img\\12\\2.ppm");
 	//ppmfile << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *world = random_scene2();
-	printf("start render");
+	hitable *world = random_scene();
 	vec3 lookfrom(13, 2, 3);
 	vec3 lookat(0, 0, 0);
 	float dist_to_focus = (lookfrom - lookat).length();
