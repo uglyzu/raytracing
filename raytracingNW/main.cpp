@@ -2,6 +2,7 @@
 #include <fstream>
 #include "moving_sphere.h"
 #include "sphere.h"
+#include "box.h"
 #include "hitable_list.h"
 #include "bvh_node.h"
 #include <limits>  
@@ -21,6 +22,32 @@
 
 using namespace std;
 time_t start, stop;
+
+vec3 color(const ray& r, hitable *world, int depth) {
+	hit_record rec;
+	if (world->hit(r, 0.01, (numeric_limits<float>::max)(), rec)) {
+		ray scattered;
+		vec3 attenuation;
+		vec3 emmitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+			//return attenuation*color(scattered, world, depth + 1);
+			//return attenuation;
+			return emmitted + attenuation*color(scattered, world, depth + 1);
+		}
+		else {
+			return emmitted;
+		}
+	}
+	else {
+		return vec3(0, 0, 0);
+	}
+}
+
+void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
+{
+	unsigned error = lodepng::encode(filename, image, width, height);
+	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+}
 
 hitable *random_scene() {
 	int n = 5000;
@@ -100,48 +127,57 @@ hitable *one_image_sphere(char** name) {
 	return new hitable_list(list, 1);
 }
 
-vec3 color(const ray& r, hitable *world, int depth) {
-	hit_record rec;
-	if (world->hit(r, 0.01, (numeric_limits<float>::max)(), rec)) {
-		ray scattered;
-		vec3 attenuation;
-		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
-			//return attenuation*color(scattered, world, depth + 1);
-			return attenuation;
-		}
-		else {
-			return vec3(0, 0, 0);
-		}
-	}
-	else {
-		vec3 unit_direction = unit_vector(r.direction());
-		float t = 0.5*(unit_direction.y() + 1.0);
-		return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
-	}
+hitable *simple_light(char** name) {
+	texture *pertext = new noise_texture(4);
+
+	hitable **list = new hitable*[4];
+	list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pertext));
+	list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
+	list[2] = new sphere(vec3(0, 7, 0), 2, new diffuse_light(new constant_texture(vec3(4, 4, 4))));
+	list[3] = new xy_rect(3,5,1,3,-2, new diffuse_light(new constant_texture(vec3(4,4,4))));
+
+	*name = "img//simple_light.png";
+	return new hitable_list(list, 4);
 }
 
-void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
-{
-	unsigned error = lodepng::encode(filename, image, width, height);
-	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+hitable *cornell_box(char** name) {
+	texture *pertext = new noise_texture(4);
+
+	hitable **list = new hitable*[6];
+	int i = 0;
+	material *red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
+	material *white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+	material *green = new lambertian(new constant_texture(vec3(0.12, 0.45, 0.15)));
+	material *light = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
+
+	list[i++] = new flip_normal(new yz_rect(0, 555, 0, 555, 555, green));
+	list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
+	list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
+	list[i++] = new flip_normal(new xz_rect(0, 555, 0, 555, 555, white));
+	list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
+	list[i++] = new flip_normal(new xy_rect(0, 555, 0, 555, 555, white));
+
+	*name = "img//cornell_box.png";
+	return new hitable_list(list, i);
 }
 
 int main() {
 	start = time(NULL);
-	const int nx = 200;
-	const int ny = 100;
+	const int nx = 2000;
+	const int ny = 1000;
 	int ns = 100;
 	std::vector<unsigned char> image;
 	image.resize(nx * ny * 4);
 	//ofstream ppmfile("img\\12\\2.ppm");
 	//ppmfile << "P3\n" << nx << " " << ny << "\n255\n";
 	char* fileName = "img//no_name.png";
-	hitable *world = one_image_sphere(&fileName);
-	vec3 lookfrom(13, 2, 3);
-	vec3 lookat(0, 0, 0);
+	hitable *world = cornell_box(&fileName);
+	vec3 lookfrom(278, 278, -800);
+	vec3 lookat(278, 278, 0);
 	float dist_to_focus = 10;
 	float aperture = 0;
-	camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus,0.0, 1.0);
+	float vfov = 40.0;
+	camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus,0.0, 1.0);
 
 #pragma omp parallel for
 	for (int j = ny - 1; j >= 0; j--)
