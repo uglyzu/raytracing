@@ -2,7 +2,7 @@
 #define BVH_NODEH
 
 #include "hitable.h"
-#include "drand48.h "
+#include "helper.h "
 
 int box_x_compare(const void *a, const void *b) {
 	aabb box_left, box_right;

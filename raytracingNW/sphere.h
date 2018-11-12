@@ -3,7 +3,7 @@
 
 #include "hitable.h"
 #include "material.h"
-#define M_PI 3.14159265358979323846
+#include "helper.h"
 
 void get_sphere_uv(const vec3&p, float& u, float& v) {
 	vec3 unit_p = unit_vector(p);

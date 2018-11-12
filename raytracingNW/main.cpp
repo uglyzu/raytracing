@@ -3,7 +3,9 @@
 #include "moving_sphere.h"
 #include "sphere.h"
 #include "box.h"
-#include "hitable_list.h"
+#include "translate.h"
+#include "material.h"
+#include "hitable.h"
 #include "bvh_node.h"
 #include <limits>  
 #include "float.h"
@@ -157,14 +159,16 @@ hitable *cornell_box(char** name) {
 	list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
 	list[i++] = new flip_normal(new xy_rect(0, 555, 0, 555, 555, white));
 
-	*name = "img//cornell_box.png";
+	list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130, 0, 65));
+	list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15), vec3(265, 0, 295)); 
+	*name = "img//instance2.png";
 	return new hitable_list(list, i);
 }
 
 int main() {
 	start = time(NULL);
-	const int nx = 2000;
-	const int ny = 1000;
+	const int nx = 500;
+	const int ny = 500;
 	int ns = 100;
 	std::vector<unsigned char> image;
 	image.resize(nx * ny * 4);

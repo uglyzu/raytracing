@@ -1,8 +1,8 @@
 #ifndef CAMERAH
 #define CAMERAH
-#define M_PI 3.14159265358979323846
+
+#include "helper.h"
 #include "ray.h"
-#include "drand48.h"
 
 vec3 random_in_unit_disk() {
 	/*在z=0平面上产生一个“起点在原点，长度小于1，方向随机”的向量。为什么是z=0平面，这个和相机的倾斜方向有关。（相机的倾斜方向为view up （简称vup，一般设置为（0，1，0）））*/
