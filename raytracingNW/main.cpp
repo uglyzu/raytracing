@@ -9,15 +9,15 @@
 #include "vec3.h"
 #include "ray.h"
 #include "camera.h"
-#include "lambertian.h"
-#include "metal.h"
-#include "dielectic.h"
 #include <iomanip>
 #include "omp.h"
 #include <vector>
 #include "lodepng.h"
 #include "texture.h"
 #include <string>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace std;
 time_t start, stop;
@@ -86,13 +86,28 @@ hitable *two_perlin_sphere(char** name) {
 	return new hitable_list(list, 2);
 }
 
+hitable *one_image_sphere(char** name) {
+
+	int nx, ny, nn;
+	unsigned char*tex_data = stbi_load("img//test.jpg", &nx, &ny, &nn, 0);
+	texture *imgtext = new image_texture(tex_data, nx, ny);
+	printf("image nx=%d, ny=%d\n", nx, ny);
+	//material * mat = new lambertian(imgtext);
+
+	hitable **list = new hitable*[1];
+	list[0] = new sphere(vec3(0, 0, 0), 3, new lambertian(imgtext));
+	*name = "img//one_image_sphere.png";
+	return new hitable_list(list, 1);
+}
+
 vec3 color(const ray& r, hitable *world, int depth) {
 	hit_record rec;
 	if (world->hit(r, 0.01, (numeric_limits<float>::max)(), rec)) {
 		ray scattered;
 		vec3 attenuation;
 		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
-			return attenuation*color(scattered, world, depth + 1);
+			//return attenuation*color(scattered, world, depth + 1);
+			return attenuation;
 		}
 		else {
 			return vec3(0, 0, 0);
@@ -113,15 +128,15 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 int main() {
 	start = time(NULL);
-	const int nx = 1000;
-	const int ny = 500;
+	const int nx = 200;
+	const int ny = 100;
 	int ns = 100;
 	std::vector<unsigned char> image;
 	image.resize(nx * ny * 4);
 	//ofstream ppmfile("img\\12\\2.ppm");
 	//ppmfile << "P3\n" << nx << " " << ny << "\n255\n";
 	char* fileName = "img//no_name.png";
-	hitable *world = two_perlin_sphere(&fileName);
+	hitable *world = one_image_sphere(&fileName);
 	vec3 lookfrom(13, 2, 3);
 	vec3 lookat(0, 0, 0);
 	float dist_to_focus = 10;

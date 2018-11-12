@@ -3,7 +3,15 @@
 
 #include "hitable.h"
 #include "material.h"
-#include "lambertian.h"
+#define M_PI 3.14159265358979323846
+
+void get_sphere_uv(const vec3&p, float& u, float& v) {
+	vec3 unit_p = unit_vector(p);
+	float phi = atan2(unit_p.z(), unit_p.x());
+	float theta = asin(unit_p.y());
+	u = 1 - (phi + M_PI) / (2 * M_PI);
+	v = (theta + M_PI / 2) / M_PI;
+}
 
 class sphere :public hitable {
 public:
@@ -27,6 +35,7 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec)const {
 		if (temp < t_max && temp > t_min) {
 			rec.t = temp;
 			rec.p = r.point_at_parameter(rec.t);
+			get_sphere_uv(rec.p, rec.u, rec.v);
 			rec.normal = (rec.p - center) / radius;
 			rec.mat_ptr = ma;
 			return true;
@@ -35,6 +44,7 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec)const {
 		if (temp < t_max && temp > t_min) {
 			rec.t = temp;
 			rec.p = r.point_at_parameter(rec.t);
+			get_sphere_uv(rec.p, rec.u, rec.v);
 			rec.normal = (rec.p - center) / radius;
 			rec.mat_ptr = ma;
 			return true;
