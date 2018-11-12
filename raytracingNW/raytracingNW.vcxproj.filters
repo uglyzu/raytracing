@@ -66,6 +66,9 @@
     <ClInclude Include="material.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="constant_medium.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp">
