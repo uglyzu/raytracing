@@ -18,25 +18,10 @@
     <ClInclude Include="camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="dielectic.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="hitable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="hitable_list.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="lambertian.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="lodepng.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="metal.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="sphere.h">
@@ -48,9 +33,6 @@
     <ClInclude Include="ray.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="drand48.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="moving_sphere.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -58,6 +40,30 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="bvh_node.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="perlin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_write.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="translate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="helper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

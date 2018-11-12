@@ -120,19 +120,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
+    <ClInclude Include="box.h" />
     <ClInclude Include="bvh_node.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="dielectic.h" />
-    <ClInclude Include="drand48.h" />
+    <ClInclude Include="helper.h" />
     <ClInclude Include="hitable.h" />
-    <ClInclude Include="hitable_list.h" />
-    <ClInclude Include="lambertian.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="material.h" />
-    <ClInclude Include="metal.h" />
     <ClInclude Include="moving_sphere.h" />
+    <ClInclude Include="perlin.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="translate.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <ItemGroup>
