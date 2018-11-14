@@ -28,6 +28,8 @@ time_t start, stop;
 vec3 lookfrom(278, 278, -800);
 vec3 lookat(278, 278, 0);
 float vfov = 40.0;
+float dist_to_focus = 10;
+float aperture = 0;
 bool SunLight = true;
 
 vec3 color(const ray& r, hitable *world, int depth) {
@@ -36,10 +38,13 @@ vec3 color(const ray& r, hitable *world, int depth) {
 		ray scattered;
 		vec3 attenuation;
 		vec3 emmitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
-		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+		float pdf;
+		vec3 albedo;
+		if (depth < 50 && rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)) {
 			//return attenuation*color(scattered, world, depth + 1);
 			//return attenuation;
-			return emmitted + attenuation*color(scattered, world, depth + 1);
+			//return emmitted + attenuation*color(scattered, world, depth + 1);
+			return emmitted + albedo*rec.mat_ptr->scattering_pdf(r, rec, scattered)*color(scattered, world, depth + 1)/pdf;
 		}
 		else {
 			return emmitted;
@@ -166,7 +171,12 @@ hitable *cornell_box(char** name) {
 
 	list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130, 0, 65));
 	list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15), vec3(265, 0, 295)); 
-	*name = "img//instance2.png";
+	*name = "img3//cornell_box01.png";
+	lookfrom = vec3(278, 278, -800);
+	lookat = vec3(278, 278, 0);
+	vfov = 40.0;
+	dist_to_focus = 10;
+	aperture = 0;
 	return new hitable_list(list, i);
 }
 
@@ -252,18 +262,15 @@ hitable *Final(char** name) {
 
 int main() {
 	start = time(NULL);
-	const int nx = 200;
-	const int ny = 200;
+	const int nx = 500;
+	const int ny = 500;
 	int ns = 100;
 	std::vector<unsigned char> image;
 	image.resize(nx * ny * 4);
 	//ofstream ppmfile("img\\12\\2.ppm");
 	//ppmfile << "P3\n" << nx << " " << ny << "\n255\n";
 	char* fileName = "img//no_name.png";
-	hitable *world = Final(&fileName);
-	
-	float dist_to_focus = 10;
-	float aperture = 0;
+	hitable *world = cornell_box(&fileName);
 	
 	camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus,0.0, 1.0);
 

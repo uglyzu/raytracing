@@ -15,7 +15,7 @@ public:
 
 bool constant_medium::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
 	bool db = (drand48() < 0.00001);
-	/*db = false;*/
+	db = false;
 	hit_record rec1, rec2;
 	if (boundary->hit(r, -FLT_MAX, FLT_MAX, rec1)) {
 		if (boundary->hit(r, rec1.t + 0.0001, FLT_MAX, rec2)) {
